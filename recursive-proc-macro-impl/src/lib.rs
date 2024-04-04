@@ -2,7 +2,7 @@
 
 use proc_macro::TokenStream;
 use quote::{quote, ToTokens};
-use syn::{parse_macro_input, ItemFn};
+use syn::{parse_macro_input, ItemFn, ReturnType, Type};
 
 #[proc_macro_attribute]
 pub fn recursive(args: TokenStream, item: TokenStream) -> TokenStream {
@@ -19,12 +19,18 @@ pub fn recursive(args: TokenStream, item: TokenStream) -> TokenStream {
     );
 
     let block = item_fn.block;
+    let ret = match &item_fn.sig.output {
+        // impl trait is not supported in closure return type, override with
+        // default, which is inferring.
+        ReturnType::Type(_, typ) if matches!(**typ, Type::ImplTrait(_)) => ReturnType::Default,
+        _ => item_fn.sig.output.clone(),
+    };
     let wrapped_block = quote! {
         {
             ::recursive::__impl::stacker::maybe_grow(
                 ::recursive::get_minimum_stack_size(),
                 ::recursive::get_stack_allocation_size(),
-                move || { #block }
+                move || #ret { #block }
             )
         }
     };
