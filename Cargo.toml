@@ -1,6 +1,6 @@
 [package]
 name = "recursive"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 authors = ["Orson Peters <orsonpeters@gmail.com>"]
 description = "Easy recursion without stack overflows."
@@ -9,5 +9,5 @@ repository = "https://github.com/orlp/recursive"
 readme = "README.md"
 
 [dependencies]
-recursive-proc-macro-impl = { version = "=0.1.0", path = "recursive-proc-macro-impl" }
+recursive-proc-macro-impl = { version = "=0.1.1", path = "recursive-proc-macro-impl" }
 stacker = "0.1"
